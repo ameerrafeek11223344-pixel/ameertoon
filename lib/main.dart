@@ -11,207 +11,100 @@ class AmeerToonApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'AmeerToon',
       debugShowCheckedModeBanner: false,
-      title: 'أثير تون',
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        primaryColor: Colors.deepPurple,
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+        primarySwatch: Colors.deepPurple,
       ),
-      home: const HomePage(),
+      home: const MangaHomeFeed(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  // قائمة تجريبية للمانهو بتصميم يشبه أثير تون (غلاف، عنوان، تصنيف، والفصول التابعة لها)
-  final List<Map<String, dynamic>> mangaList = const [
-    {
-      'title': 'بداية الأسطورة (Solo Leveling Style)',
-      'genre': 'أكشن • خيال • مغامرة',
-      'cover': 'https://via.placeholder.com/300x450/222222/FFFFFF?text=Manga+Cover+1',
-      'chapters': [
-        {
-          'title': 'الفصل الأول',
-          'images': [
-            'https://via.placeholder.com/800x1200/333333/FFFFFF?text=Page+1',
-            'https://via.placeholder.com/800x1200/444444/FFFFFF?text=Page+2',
-          ],
-        },
-        {
-          'title': 'الفصل الثاني',
-          'images': [
-            'https://via.placeholder.com/800x1200/222222/FFFFFF?text=Page+1',
-            'https://via.placeholder.com/800x1200/333333/FFFFFF?text=Page+2',
-          ],
-        },
-      ],
-    },
-    {
-      'title': 'المواجهة الحاسمة',
-      'genre': 'غموض • إثارة • دراما',
-      'cover': 'https://via.placeholder.com/300x450/333333/FFFFFF?text=Manga+Cover+2',
-      'chapters': [
-        {
-          'title': 'الفصل الأول',
-          'images': [
-            'https://via.placeholder.com/800x1200/555555/FFFFFF?text=Page+1',
-          ],
-        },
-      ],
-    },
-  ];
+class MangaHomeFeed extends StatelessWidget {
+  const MangaHomeFeed({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // قائمة تجريبية لفصول المانجا/المانهوا مع صور افتراضية للاختبار
+    final List<Map<String, dynamic>> sampleChapters = [
+      {
+        'title': 'الفصل 1: بداية الأسطورة',
+        'images': [
+          'https://picsum.photos/800/1200?random=1',
+          'https://picsum.photos/800/1200?random=2',
+          'https://picsum.photos/800/1200?random=3',
+        ],
+      },
+      {
+        'title': 'الفصل 2: المواجهة الحاسمة',
+        'images': [
+          'https://picsum.photos/800/1200?random=4',
+          'https://picsum.photos/800/1200?random=5',
+        ],
+      },
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
-          children: [
-            Icon(Icons.auto_stories, color: Colors.deepPurpleAccent),
-            SizedBox(width: 8),
-            Text('أثير تون | AmeerToon', style: TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
         backgroundColor: const Color(0xFF1E1E1E),
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          itemCount: mangaList.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // عرض عملين في كل صف
-            childAspectRatio: 0.65, // نسبة الطول إلى العرض لتناسب شكل غلاف المانهو
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemBuilder: (context, index) {
-            final manga = mangaList[index];
-            return GestureDetector(
-              onTap: () {
-                _showChaptersBottomSheet(context, manga);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E1E1E),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                        child: Image.network(
-                          manga['cover'],
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            manga['title'],
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            manga['genre'],
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
+        title: const Text(
+          'أثير تون - AmeerToon',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
+        centerTitle: true,
       ),
-    );
-  }
-
-  void _showChaptersBottomSheet(BuildContext context, Map<String, dynamic> manga) {
-    final chapters = manga['chapters'] as List;
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          height: 350,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                manga['title'],
-                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+      body: ListView.builder(
+        itemCount: sampleChapters.length,
+        padding: const EdgeInsets.all(12),
+        itemBuilder: (context, index) {
+          final chapter = sampleChapters[index];
+          return Card(
+            color: const Color(0xFF1E1E1E),
+            margin: const EdgeInsets.only(bottom: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
               ),
-              const SizedBox(height: 4),
-              Text(
-                'اختر الفصل للقراءة (يعمل بدون إنترنت بعد فتحه لأول مرة):',
-                style: TextStyle(color: Colors.grey[400], fontSize: 11),
-              ),
-              const Divider(color: Colors.grey),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: chapters.length,
-                  itemBuilder: (context, index) {
-                    final chapter = chapters[index];
-                    return ListTile(
-                      title: Text(
-                        chapter['title'],
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.deepPurpleAccent),
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MangaReaderPage(
-                              chapterTitle: '${manga['title']} - ${chapter['title']}',
-                              imageUrls: List<String>.from(chapter['images']),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+              title: Text(
+                chapter['title'],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
                 ),
               ),
-            ],
-          ),
-        );
-      },
+              subtitle: const Text(
+                'متاح للقراءة والتحميل بدون إنترنت',
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.deepPurpleAccent,
+                size: 16,
+              ),
+              onTap: () {
+                // الانتقال إلى شاشة القارئ عند الضغط على الفصل
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MangaReaderPage(
+                      chapterTitle: chapter['title'],
+                      imageUrls: List<String>.from(chapter['images']),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
