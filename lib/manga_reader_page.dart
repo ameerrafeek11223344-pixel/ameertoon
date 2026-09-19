@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class MangaReaderPage extends StatelessWidget {
   final String chapterTitle;
-  // قائمة تحتوي على روابط صور الفصول التي تم جلبها من السيرفر أو المصدر
   final List<String> imageUrls;
 
   const MangaReaderPage({
@@ -14,9 +14,9 @@ class MangaReaderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // خلفية سوداء تناسب قراءة المانهو ليلاً
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.grey[900],
+        backgroundColor: const Color(0xFF1E1E1E),
         title: Text(
           chapterTitle,
           style: const TextStyle(color: Colors.white, fontSize: 16),
@@ -33,36 +33,34 @@ class MangaReaderPage extends StatelessWidget {
           : ListView.builder(
               itemCount: imageUrls.length,
               itemBuilder: (context, index) {
-                return Image.network(
-                  imageUrls[index],
-                  fit: BoxFit.fitWidth, // لضمان عرض الصورة بعرض الشاشة بالكامل
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return SizedBox(
-                      height: 400,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  (loadingProgress.expectedTotalBytes ?? 1)
-                              : null,
-                          color: Colors.deepPurpleAccent,
-                        ),
+                return CachedNetworkImage(
+                  imageUrl: imageUrls[index],
+                  fit: BoxFit.fitWidth,
+                  placeholder: (context, url) => const SizedBox(
+                    height: 400,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.deepPurpleAccent,
                       ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 200,
-                      color: Colors.grey[850],
-                      child: const Center(
-                        child: Text(
-                          "فشل تحميل الصورة",
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    height: 250,
+                    color: const Color(0xFF1E1E1E),
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.wifi_off, color: Colors.grey, size: 40),
+                          SizedBox(height: 8),
+                          Text(
+                            "تعذر التحميل، تأكد من الاتصال أو تم حفظه مسبقاً",
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                        ],
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 );
               },
             ),
